@@ -1,0 +1,38 @@
+Traceback (most recent call last):
+  File "/home/ton/Downloads/code/system/main.py", line 22, in <module>
+    from flcore.servers.serverHomeLG import FedHomeLG
+  File "/home/ton/Downloads/code/system/flcore/servers/serverHomeLG.py", line 9, in <module>
+    import matplotlib.pyplot as plt
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/pyplot.py", line 66, in <module>
+    from matplotlib.figure import Figure, FigureBase, figaspect
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/figure.py", line 40, in <module>
+    from matplotlib import _blocking_input, backend_bases, _docstring, projections
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/projections/__init__.py", line 60, in <module>
+    from mpl_toolkits.mplot3d import Axes3D
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/__init__.py", line 1, in <module>
+    from .axes3d import Axes3D
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/axes3d.py", line 35, in <module>
+    from . import art3d
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/mpl_toolkits/mplot3d/art3d.py", line 347, in <module>
+    class Collection3D(Collection):
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py", line 150, in __init_subclass__
+    cls._update_set_signature_and_docstring()
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py", line 178, in _update_set_signature_and_docstring
+    + kwdoc(cls))
+      ^^^^^^^^^^
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py", line 1858, in kwdoc
+    'Properties:\n' + '\n'.join(ai.pprint_setters(leadingspace=4)))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py", line 1619, in pprint_setters
+    accepts = self.get_valid_values(prop)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/anaconda3/lib/python3.12/site-packages/matplotlib/artist.py", line 1495, in get_valid_values
+    return re.sub("\n *", " ", match.group(1))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/anaconda3/lib/python3.12/re/__init__.py", line 186, in sub
+    return _compile(pattern, flags).sub(repl, string, count)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/anaconda3/lib/python3.12/re/__init__.py", line 280, in _compile
+    def _compile(pattern, flags):
+    
+KeyboardInterrupt

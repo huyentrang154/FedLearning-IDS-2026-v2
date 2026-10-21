@@ -1,0 +1,39 @@
+============================================================
+Random Seed : 0
+============================================================
+
+============= Running 1/1 =============
+Creating server and clients ...
+Noise Type: label_flipping
+Poisoned Worker IDs: []
+
+Join ratio / total clients: 1.0 / 20
+
+Algorithm:  fedavg Dataset:  toniot
+Finished creating server and clients.
+Algorithm fedavg
+
+-------------Round number: 0-------------
+Train Loss
+	Client 18: Train loss: 2.62
+	Client 1: Train loss: 2.41
+Traceback (most recent call last):
+  File "/home/ton/Downloads/code/system/main.py", line 235, in <module>
+    run(args)
+  File "/home/ton/Downloads/code/system/main.py", line 139, in run
+    server.train()
+  File "/home/ton/Downloads/code/system/flcore/servers/serverAvg.py", line 156, in train
+    self.evaluate()
+  File "/home/ton/Downloads/code/system/flcore/servers/serverAvg.py", line 418, in evaluate
+    stats_train = self.train_metrics()
+                  ^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/Downloads/code/system/flcore/servers/serverAvg.py", line 518, in train_metrics
+    list_loss = c.train_metrics()
+                ^^^^^^^^^^^^^^^^^
+  File "/home/ton/Downloads/code/system/flcore/clients/clientAvg.py", line 299, in train_metrics
+    x, y = self._process_batch(x, y)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ton/Downloads/code/system/flcore/clients/clientAvg.py", line 64, in _process_batch
+    x = x[0].to(self.device) if isinstance(x, list) else x.to(self.device)
+                                                         ^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
