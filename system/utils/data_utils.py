@@ -39,6 +39,21 @@ import os
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 
+NORMAL_LABEL = {
+    'nslkdd': 0,
+    'cic_ids': 0,
+    'ctu13_13': 0,
+    'ctu13_08': 0,
+    'ctu13_09': 0,
+    'ctu13_10': 0,
+    'internet_ad': 0,
+    'spambase': 0,
+    'unsw': 0,
+    'bot_iot': 0,
+    'crawl': 0,
+    'cifar10': 0,
+}
+
 def read_data(dataset, idx, data_type, type):
     data_dirs = {
         'train': 'train',
