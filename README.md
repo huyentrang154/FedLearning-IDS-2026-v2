@@ -299,3 +299,32 @@ Run each configuration with seeds `0`, `1`, and `2`, then report mean ± standar
 - `system/utils/data_utils.py`: dataset loading utilities.
 
 Paths may vary slightly between repository versions; use the current checkout as the source of truth.
+## Downloading and Preparing Datasets
+
+**Note:** Raw dataset files are not stored in this GitHub repository. Download them from the official sources below and place them in the corresponding `dataset/<dataset_id>/rawdata/` directory.
+
+### 1. Dataset Download Links
+
+| Dataset | Dataset ID | Official Download / Source |
+|---|---|---|
+| UNSW-NB15 | `unsw` | https://research.unsw.edu.au/projects/unsw-nb15-dataset |
+| CIC-IDS2017 | `cic_ids` | https://www.unb.ca/cic/datasets/ids-2017.html |
+| TON_IoT | `toniot` | https://research.unsw.edu.au/projects/toniot-datasets |
+| NSL-KDD | `nslkdd` | https://www.unb.ca/cic/datasets/nsl.html |
+
+For TON_IoT, use the **network traffic dataset**, not the telemetry or operating-system datasets. The NSL-KDD publisher page may no longer provide direct downloads; if using a mirror, verify the source and cite the original dataset.
+
+### 2. Directory Structure
+
+After downloading and extracting the datasets, organize the files as follows:
+
+```text
+dataset/
+├── unsw/
+│   └── rawdata/
+├── cic_ids/
+│   └── rawdata/
+├── toniot/
+│   └── rawdata/
+└── nslkdd/
+    └── rawdata/
