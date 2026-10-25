@@ -39,6 +39,101 @@ Its default is `noniid`. The parser does **not** directly declare `noniid20` or 
 
 The option `--patition` (spelled this way in the current code) is described in `main.py` as a FedNoRo result-path option. Do not treat it as the general dataset partition selector unless the server implementation explicitly uses it for that purpose.
 
+
+## Results Directory Structure
+
+The `results/` directory stores experimental logs and evaluation
+results generated during federated learning experiments. It is
+excluded from GitHub because experimental outputs can be large and
+depend on the experimental configuration.
+
+### Directory Organization
+
+The directory structure is organized as follows:
+
+```text
+results/
+├── <dataset>/
+│   └── <data_type>/
+│       └── <algorithm>/
+│           └── <experiment_name>/
+│               └── seed_<seed>/
+│                   └── tracking.log
+└── summary/
+    ├── summary_per_seed.csv
+    ├── summary_mean_std.csv
+    └── summary_mean_std.xlsx
+```
+
+The directory components are defined as follows:
+
+| Component | Description |
+|---|---|
+| `<dataset>` | Dataset used in the experiment, e.g., `nslkdd`, `unsw`, `cic_ids`, or `toniot`. |
+| `<data_type>` | Data partition setting, e.g., `noniid` or another supported partition type. |
+| `<algorithm>` | Federated learning algorithm, e.g., `fedavg`, `fedcorr`, or `fednoro`. |
+| `<experiment_name>` | Experiment identifier, typically a timestamp such as `20261022-213705`. |
+| `seed_<seed>` | Random seed used for the experiment. The current setup uses `seed_0`, `seed_1`, and `seed_2`. |
+| `tracking.log` | Log containing experiment configuration, training progress, and evaluation metrics. |
+
+### Example
+
+```text
+results/
+└── unsw/
+    └── noniid/
+        └── fedcorr/
+            └── 20261022-213705/
+                ├── seed_0/
+                │   └── tracking.log
+                ├── seed_1/
+                │   └── tracking.log
+                └── seed_2/
+                    └── tracking.log
+```
+
+In this example, the `fedcorr` algorithm is evaluated on the
+UNSW-NB15 dataset under the `noniid` partition setting. The experiment
+is repeated using three random seeds.
+
+### Result Aggregation
+
+The script `summarize_results.py` scans the local `results/`
+directory and extracts the final `Best performance metrics` block
+from each valid `tracking.log`.
+
+The script summarizes the following metrics when available:
+
+- Accuracy
+- F1-score
+- Recall
+- Precision
+
+Metrics are collected separately for `normal` and `flipping`
+evaluation results when those fields are present in the log.
+
+The script uses `seed_0`, `seed_1`, and `seed_2` to calculate the
+mean and sample standard deviation across runs. It generates:
+
+- `results/summary/summary_per_seed.csv`: detailed results for each log.
+- `results/summary/summary_mean_std.csv`: aggregated mean and standard deviation.
+- `results/summary/summary_mean_std.xlsx`: Excel workbook containing the aggregated results and per-log details.
+
+Run the aggregation script from the repository root:
+
+```bash
+pip install pandas openpyxl
+python summarize_results.py
+```
+
+### Version Control
+
+The `results/` directory is not tracked by GitHub. Each user must
+run the experiments locally to generate their own logs and results.
+The directory structure and aggregation procedure are documented
+here to support reproducibility.
+
+
 ## 3. Algorithms
 
 The supplied `main.py` registers these algorithm identifiers:
