@@ -55,6 +55,9 @@ class FedNoRo(object):
         self.uploaded_weights = []
         self.uploaded_ids = []
         self.uploaded_models = []
+        self.times = times
+        self.seed = args.seed
+        self.exp_name = args.exp_name
 
         self.algo = args.algorithm
         self.rs_train_loss = []
