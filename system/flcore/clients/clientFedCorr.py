@@ -24,6 +24,11 @@ class ClientFedCorr(object):
         self.num_classes = args.num_classes
         self.data_type = args.data_type
 
+        self.noise_type = args.noise_type
+        self.num_of_poisoned_workers = args.num_of_poisoned_workers
+        self.poisoned_sample_ratio = args.poisoned_sample_ratio
+        self.attack_noise_std = args.attack_noise_std
+
         self.loss_fn = nn.CrossEntropyLoss()
         self.optimizer = torch.optim.SGD(
             self.model.parameters(), lr=self.learning_rate, momentum=0.5

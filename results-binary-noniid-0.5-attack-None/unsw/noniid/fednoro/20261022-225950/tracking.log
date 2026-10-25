@@ -1,0 +1,47 @@
+
+Algorithm: fednoro 
+Dataset: unsw
+warmup_rounds=10, kd_begin=10, kd_end=49, kd_a=0.8
+-------------Round number: 0-------------
+Train Loss
+	Client 6: Train loss: 2.4
+	Client 19: Train loss: 2.29
+	Client 16: Train loss: 2.38
+	Client 0: Train loss: 2.22
+	Client 7: Train loss: 2.39
+	Client 18: Train loss: 2.3
+	Client 11: Train loss: 2.35
+	Client 12: Train loss: 2.31
+	Client 9: Train loss: 2.35
+	Client 5: Train loss: 2.3
+	Client 15: Train loss: 2.31
+	Client 8: Train loss: 2.3
+	Client 2: Train loss: 2.22
+	Client 17: Train loss: 2.3
+	Client 13: Train loss: 2.3
+	Client 10: Train loss: 2.3
+	Client 14: Train loss: 2.31
+	Client 4: Train loss: 2.29
+	Client 1: Train loss: 2.32
+	Client 3: Train loss: 2.23
+Performance Metrics
+	Client 6: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 19: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 16: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 0: acc 0.36, precision: 0.13, recall: 0.36, f1: 0.19
+	Client 7: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 18: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 11: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 12: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 9: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 5: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 15: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 8: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 2: acc 0.33, precision: 0.11, recall: 0.33, f1: 0.16
+	Client 17: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 13: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 10: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 14: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 4: acc 0.0, precision: 0.0, recall: 0.0, f1: 0.0
+	Client 1: acc 0.18, precision: 0.03, recall: 0.18, f1: 0.05
+	Client 3: acc 0.19, precision: 0.03, recall: 0.19, f1: 0.06

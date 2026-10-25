@@ -72,22 +72,26 @@ def read_data(dataset, idx, data_type, type):
     return data
 
 
-def read_client_data(dataset, idx, num_clients, data_type='train', type='noniid'):
+def read_client_data(dataset, idx, num_clients=None, data_type='train', type='noniid',
+                     partition=None, alpha=None, poison_attack=None):
+    if num_clients is None:
+        num_clients = 20
+
     # Nếu idx là None hoặc -1, ta sẽ lấy dữ liệu của TẤT CẢ các client
     if idx is None or idx == -1:
         all_X = []
         all_y = []
         for i in range(num_clients):
-            data = read_data(dataset=dataset, idx=i, data_type=data_type, type=type+ str(num_clients))
+            data = read_data(dataset=dataset, idx=i, data_type=data_type, type=type + str(num_clients))
             all_X.append(torch.Tensor(data['x']).type(torch.float32))
             all_y.append(torch.Tensor(data['y']).type(torch.int64))
-        
+
         # Gộp tất cả tensor lại thành 1 tensor lớn
         X = torch.cat(all_X, dim=0)
         y = torch.cat(all_y, dim=0)
     else:
         # Lấy dữ liệu của 1 client cụ thể như cũ
-        data = read_data(dataset=dataset, idx=idx, data_type=data_type, type=type+ str(num_clients))
+        data = read_data(dataset=dataset, idx=idx, data_type=data_type, type=type + str(num_clients))
         X = torch.Tensor(data['x']).type(torch.float32)
         y = torch.Tensor(data['y']).type(torch.int64)
 

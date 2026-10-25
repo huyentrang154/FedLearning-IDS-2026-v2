@@ -25,9 +25,12 @@ from flcore.servers.serverMedian import FedMedian
 from flcore.servers.serverTrimmedMean import FedTrimmedMean
 from flcore.servers.serverFLTrust import FLTrust
 from flcore.servers.serverAE import FedAE
-from flcore.centralized.centralizedAE import CentralizedAE
 from flcore.trainmodel.models import *
+from flcore.servers.serverNoRo import FedNoRo # LyVT
+from flcore.servers.serverFedCorr import FedCorr
 
+torch.set_num_threads(1)
+torch.set_num_interop_threads(1)
 warnings.simplefilter("ignore")
 
 def set_random_seed(seed):
@@ -82,7 +85,11 @@ def run(args):
             raise NotImplementedError
 
         args.num_classes = num_classes
-        if args.model_type == 'mlp':
+        if algorithm == 'fednoro':
+            args.model = MLP(n_features=n_features, num_classes=num_classes).to(args.device)
+        elif algorithm == 'fedcorr':
+            args.model = MLP(n_features=n_features, num_classes=num_classes).to(args.device)
+        elif args.model_type == 'mlp':
             args.model = MLP(n_features=n_features, num_classes=num_classes).to(args.device)
         elif args.model_type == 'ae':
             args.model = AE(n_features=n_features, num_classes=num_classes).to(args.device)
@@ -130,8 +137,10 @@ def run(args):
             server = FedTrimmedMean(args, i)
         elif algorithm == 'fedtrust':
             server = FLTrust(args, i)
-        elif algorithm == "centralized":
-            server = CentralizedAE(args, i)
+        elif algorithm == 'fednoro': #Ly
+            server = FedNoRo(args, i)
+        elif algorithm == 'fedcorr':
+            server = FedCorr(args, i)
         else:
             raise NotImplementedError
 
@@ -150,12 +159,12 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     # general
-    parser.add_argument('-algo', "--algorithm", type=str, default='centralized')
+    parser.add_argument('-algo', "--algorithm", type=str, default='fedus')
 
     parser.add_argument('-dev', "--device", type=str, default="cuda",
                         choices=["cpu", "cuda"])
     parser.add_argument('-did', "--device_id", type=str, default="0")
-    parser.add_argument('-data', "--dataset", type=str, default="nslkdd")
+    parser.add_argument('-data', "--dataset", type=str, default="cic_ids")
     parser.add_argument('-is', "--image_size", type=int, default=0,
                     help="Kích thước cạnh của ảnh (ví dụ: 32 cho CIFAR-10)")
     parser.add_argument('-ic', "--input_channels", type=int, default=0,
@@ -165,7 +174,7 @@ if __name__ == "__main__":
     parser.add_argument('-lbs', "--batch_size", type=int, default=4)
     parser.add_argument('-lr', "--local_learning_rate", type=float, default=0.01,
                         help="Local learning rate")
-    parser.add_argument('-gr', "--global_rounds", type=int, default=500)
+    parser.add_argument('-gr', "--global_rounds", type=int, default=50)
     parser.add_argument('-ls', "--local_steps", type=int, default=5)
     parser.add_argument('-jr', "--join_ratio", type=float, default=1.0,
                         help="Ratio of clients per round")
@@ -205,21 +214,68 @@ if __name__ == "__main__":
     parser.add_argument('-dlr', "--dr_learning_rate", type=float, default=0.0)
     parser.add_argument('-L', "--L", type=float, default=1.0)
 
+    # FedCorr
+    parser.add_argument('--iteration1', type=int, default=5,
+                        help="Stage 1: number of noise-detection outer iterations")
+    parser.add_argument('--rounds1', type=int, default=10,
+                        help="Stage 2: fine-tuning rounds on clean clients")
+    parser.add_argument('--rounds2', type=int, default=40,
+                        help="Stage 3: final FedAvg rounds (all clients)")
+    parser.add_argument('--frac1', type=float, default=1.0,
+                        help="Client fraction per sub-round in Stage 1")
+    parser.add_argument('--frac2', type=float, default=1.0,
+                        help="Client fraction in Stage 2 / Stage 3")
+    parser.add_argument('--beta_fedcorr', type=float, default=0.0,
+                        help="Proximal term coefficient (original default=0, i.e. disabled)")
+    parser.add_argument('--relabel_ratio', type=float, default=0.5,
+                        help="Fraction of estimated noisy samples to relabel")
+    parser.add_argument('--confidence_thres', type=float, default=0.5,
+                        help="Min softmax confidence required to accept a relabelling")
+    parser.add_argument('--clean_set_thres', type=float, default=0.1,
+                        help="Max noise level to classify a client as clean in Stage 2")
+    parser.add_argument('--correction', type=int, default=0,
+                        help="1 = enable label correction; 0 = disable (original default=0)")
+    parser.add_argument('--fine_tuning', type=int, default=0,
+                        help="1 = enable Stage 2 fine-tuning; 0 = skip (original default=0)")
+
+    # FedNoRo data / result path args
+    parser.add_argument('--patition', type=str, default='noniid',
+                        help="Data partition type (used in result path)")
+    parser.add_argument('--alpha_dir', type=float, default=0.5,
+                        help="Dirichlet alpha (used in result path)")
+    parser.add_argument('--poison_attack', type=str, default=None,
+                        help="Poison attack label for result path")
+    parser.add_argument('--binary', type=int, default=1,
+                        help="1 = use binary result path prefix")
+
+    # FedNoRo - LyVT
+    parser.add_argument('-warmup', "--warmup_rounds", type=int, default=10,
+                        help="Stage-1 warm-up rounds before noisy-client identification")
+    parser.add_argument('-kd_begin', "--kd_begin", type=int, default=10,
+                        help="Round to start ramping up the KD weight w_kd")
+    parser.add_argument('-kd_end', "--kd_end", type=int, default=49,
+                        help="Round at which w_kd reaches its maximum")
+    parser.add_argument('-kd_a', "--kd_a", type=float, default=0.8,
+                        help="Maximum KD weight multiplier (paper default 0.8)")
+
     # FedFomo
     parser.add_argument('-M', "--M", type=int, default=5,
                         help="Server only sends M client models to one client at each round")
     # Label flipping 
-    parser.add_argument('-nt', '--noise_type', type=str, default="Asymmetric",
+    parser.add_argument('-nt', '--noise_type', type=str, default="label_flipping",
                     choices=[None, 'gaussian_noise', 'label_flipping', 'Asymmetric', 'Symmetric'],
                     help="Type of noise: 'gaussian_noise', 'label_flipping', or None.")
-    parser.add_argument('-npw', '--num_of_poisoned_workers', type=float, default=0,
+    parser.add_argument('-npw', '--num_of_poisoned_workers', type=float, default=0.3,
                         help="Number of clients to be poisoned.")
-    parser.add_argument('-psr', '--poisoned_sample_ratio', type=float, default=0,
+    parser.add_argument('-psr', '--poisoned_sample_ratio', type=float, default=1.0,
                         help="Ratio of data samples to be poisoned (0 to 1).")
     parser.add_argument('-ans', '--attack_noise_std', type=float, default=0,
                         help="Standard deviation for Gaussian noise.")
     parser.add_argument("--exp_name", type=str, default="", help="Experiment name")
     args = parser.parse_args()
+    # Cast int flags to bool for FedCorr
+    args.correction = bool(args.correction)
+    args.fine_tuning = bool(args.fine_tuning)
     set_random_seed(args.seed)
 
     print("=" * 60)
@@ -233,5 +289,4 @@ if __name__ == "__main__":
         args.device = "cpu"
 
     run(args)
-# K0VitxF3C#8E
-
+#K0VitxF3C#8E
