@@ -628,6 +628,9 @@ class FedCorr(object):
         self.attack_noise_std = args.attack_noise_std
         self.poisoned_worker_ids = []
         self.initialize_poisoned_workers()
+        self.times = times
+        self.seed = args.seed
+        self.exp_name = args.exp_name
 
         # ── FedCorr hyper-parameters ──────────────────────────────────
         self.iteration1 = args.iteration1          # Stage 1 outer iterations
